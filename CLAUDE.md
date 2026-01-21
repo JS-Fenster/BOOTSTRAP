@@ -17,7 +17,6 @@
 | **Entscheidungen** | Selbststaendig treffen wenn moeglich |
 | **Rueckfragen** | Bei Unklarheiten immer nachfragen |
 | **Git Commits** | IMMER committen wenn Aenderungen funktionieren (fuer Rollback) |
-| **Report-Dateien** | KEINE erstellen - Info gehoert in Git-Commits |
 
 ---
 
