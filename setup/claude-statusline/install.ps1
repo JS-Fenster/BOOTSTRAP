@@ -33,38 +33,45 @@ $statuslineDest = Join-Path $claudeDir "statusline.ps1"
 if (-not $SkipFont) {
     Write-Host "[1/4] Nerd Font Installation..." -ForegroundColor Yellow
 
-    $fontUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
-    $fontZip = "$env:TEMP\JetBrainsMono.zip"
-    $fontDir = "$env:TEMP\JetBrainsMono"
+    # Lokale Fonts im Repo?
+    $localFontDir = Join-Path $scriptDir "JetBrainsMono"
 
-    # Download
-    Write-Host "      Downloading JetBrainsMono Nerd Font..." -ForegroundColor Gray
-    try {
-        Invoke-WebRequest -Uri $fontUrl -OutFile $fontZip -UseBasicParsing
-        Write-Host "      Download erfolgreich" -ForegroundColor Green
-    } catch {
-        Write-Host "      Download fehlgeschlagen: $_" -ForegroundColor Red
-        Write-Host "      Manueller Download: https://www.nerdfonts.com/font-downloads" -ForegroundColor Yellow
+    if (Test-Path $localFontDir) {
+        Write-Host "      Lokale Fonts gefunden, nutze diese..." -ForegroundColor Gray
+        $fontDir = $localFontDir
+    } else {
+        # Download falls nicht lokal vorhanden
+        $fontUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+        $fontZip = "$env:TEMP\JetBrainsMono.zip"
+        $fontDir = "$env:TEMP\JetBrainsMono"
+
+        Write-Host "      Downloading JetBrainsMono Nerd Font..." -ForegroundColor Gray
+        try {
+            Invoke-WebRequest -Uri $fontUrl -OutFile $fontZip -UseBasicParsing
+            Write-Host "      Download erfolgreich" -ForegroundColor Green
+            Expand-Archive -Path $fontZip -DestinationPath $fontDir -Force
+        } catch {
+            Write-Host "      Download fehlgeschlagen: $_" -ForegroundColor Red
+            Write-Host "      Manueller Download: https://www.nerdfonts.com/font-downloads" -ForegroundColor Yellow
+            $fontDir = $null
+        }
     }
 
-    # Extract
-    if (Test-Path $fontZip) {
-        Write-Host "      Entpacke Schriftarten..." -ForegroundColor Gray
-        Expand-Archive -Path $fontZip -DestinationPath $fontDir -Force
-
+    if ($fontDir -and (Test-Path $fontDir)) {
         # Install fonts
         Write-Host "      Installiere Schriftarten..." -ForegroundColor Gray
         $fonts = Get-ChildItem -Path $fontDir -Filter "*.ttf"
-        $shell = New-Object -ComObject Shell.Application
-        $fontsFolder = $shell.Namespace(0x14) # Windows Fonts folder
+
+        # Erstelle lokalen Font-Ordner
+        $userFontDir = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
+        if (-not (Test-Path $userFontDir)) {
+            New-Item -ItemType Directory -Path $userFontDir -Force | Out-Null
+        }
 
         foreach ($font in $fonts) {
-            # Copy to Windows Fonts (requires elevation for "all users")
-            $fontPath = $font.FullName
-            $destPath = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\$($font.Name)"
-
+            $destPath = Join-Path $userFontDir $font.Name
             if (-not (Test-Path $destPath)) {
-                Copy-Item $fontPath $destPath -Force
+                Copy-Item $font.FullName $destPath -Force
             }
         }
 
@@ -72,7 +79,7 @@ if (-not $SkipFont) {
         $regPath = "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
         foreach ($font in $fonts) {
             $fontName = $font.BaseName
-            $fontFile = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\$($font.Name)"
+            $fontFile = Join-Path $userFontDir $font.Name
             if (Test-Path $fontFile) {
                 Set-ItemProperty -Path $regPath -Name "$fontName (TrueType)" -Value $fontFile -ErrorAction SilentlyContinue
             }
@@ -80,9 +87,11 @@ if (-not $SkipFont) {
 
         Write-Host "      Schriftarten installiert (Neustart evtl. erforderlich)" -ForegroundColor Green
 
-        # Cleanup
-        Remove-Item $fontZip -Force -ErrorAction SilentlyContinue
-        Remove-Item $fontDir -Recurse -Force -ErrorAction SilentlyContinue
+        # Cleanup nur bei Download
+        if ($fontZip -and (Test-Path $fontZip)) {
+            Remove-Item $fontZip -Force -ErrorAction SilentlyContinue
+            Remove-Item "$env:TEMP\JetBrainsMono" -Recurse -Force -ErrorAction SilentlyContinue
+        }
     }
 } else {
     Write-Host "[1/4] Nerd Font Installation... UEBERSPRUNGEN" -ForegroundColor DarkGray
