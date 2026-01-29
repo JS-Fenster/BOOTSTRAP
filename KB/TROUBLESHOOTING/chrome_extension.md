@@ -123,21 +123,48 @@ ren "%LOCALAPPDATA%\Google\Chrome\User Data\NativeMessagingHosts\com.anthropic.c
 
 ---
 
-### 3. Extension nicht verbunden trotz korrekter Prozesse
+### 3. Native Host EADDRINUSE - HAUPTPROBLEM GEFUNDEN!
 
-**Symptom:** `tabs_context_mcp` gibt "Browser extension is not connected" zurueck, obwohl:
-- Nur aktuelle Node-Prozesse laufen
-- Native Host Config korrekt ist
-- Extension in Chrome installiert ist
+**Symptom:** `tabs_context_mcp` gibt "Browser extension is not connected" zurueck
 
-**Moegliche Ursachen:**
+**Ursache (verifiziert 2026-01-29):**
+
+Beide Prozesse versuchen denselben Named Pipe zu belegen:
+
+```
+Claude Code startet:  --claude-in-chrome-mcp    → erstellt Listener auf Pipe
+Chrome startet:       --chrome-native-host      → versucht AUCH Listener zu erstellen
+                                                 → EADDRINUSE Fehler!
+```
+
+**Beweis:**
+```bash
+echo '{"type":"ping"}' | node cli.js --chrome-native-host
+```
+Ausgabe:
+```
+[Claude Chrome Native Host] Creating socket listener: \\.\pipe\claude-mcp-browser-bridge-andre
+[Claude Chrome Native Host] Socket server error: Error: listen EADDRINUSE: address already in use
+```
+
+**Diagnose:** Das ist ein Bug/Architektur-Problem in Claude Code. Der Native Host sollte sich als CLIENT mit dem MCP-Server verbinden, nicht selbst einen Server erstellen.
+
+**Workaround:** Unbekannt - moeglicherweise muss Claude Code ohne MCP-Server gestartet werden, oder die Chrome-Extension braucht ein Update.
+
+**Status:** Bug-Report bei Anthropic erforderlich
+
+---
+
+### 4. Extension nicht verbunden - andere Ursachen
+
+**Moegliche weitere Ursachen:**
 - [ ] Chrome wurde nach Prozess-Neustart nicht neu gestartet
 - [ ] Extension ist deaktiviert
 - [ ] Extension hat falsche Permissions
 - [ ] Native Host Batch ist nicht ausfuehrbar
 - [ ] Firewall/Antivirus blockiert Named Pipe
 
-**Noch zu pruefen:**
+**Pruefschritte:**
 - Extension-Status in `chrome://extensions`
 - Extension-Console-Logs (Rechtsklick > Inspect)
 - Windows Event Log fuer Fehler
