@@ -2,10 +2,11 @@
 # Zeigt: Model | Fortschritt | Prozent | Frei-Token
 #
 # v3: Nutzt current_usage fuer ECHTEN Kontext-Verbrauch
-#     Modellspezifische Kontextgroessen (Opus 4.5 = 1M)
 #
-# WICHTIG: total_input_tokens ist KUMULATIV (Summe aller API-Calls)
-#          current_usage.input_tokens ist der AKTUELLE Kontext
+# WICHTIG:
+# - total_input_tokens ist KUMULATIV (Summe aller API-Calls)
+# - current_usage.input_tokens ist der AKTUELLE Kontext
+# - Claude Code Auto-Compact greift bei ~200K (unabhaengig vom Modell!)
 
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -16,22 +17,13 @@ try {
     $data = $input_json | ConvertFrom-Json
 
     # Extract model info
-    $modelId = $data.model.id
     $modelDisplay = $data.model.display_name
 
-    # Modellspezifische Kontextgroessen
-    $contextSize = switch -Wildcard ($modelId) {
-        "*opus*"   { 1000000 }  # Opus 4.5 = 1M
-        "*sonnet*" { 200000 }   # Sonnet = 200K
-        "*haiku*"  { 200000 }   # Haiku = 200K
-        default    {
-            # Fallback auf Claude Code's Wert oder 200K
-            if ($data.context_window.context_window_size) {
-                $data.context_window.context_window_size
-            } else {
-                200000
-            }
-        }
+    # Claude Code Auto-Compact Limit ist IMMER 200K (nicht modellabhaengig!)
+    $contextSize = if ($data.context_window.context_window_size) {
+        $data.context_window.context_window_size
+    } else {
+        200000
     }
 
     # ECHTER Kontext-Verbrauch aus current_usage (nicht kumulativ!)
@@ -85,15 +77,8 @@ try {
     $remainingTokens = [math]::Max(0, $contextSize - $tokensUsed)
     $remainingDisplay = "{0:N0}K" -f [math]::Round($remainingTokens / 1000, 0)
 
-    # Kontextgroesse Anzeige (K oder M)
-    $contextDisplay = if ($contextSize -ge 1000000) {
-        "{0}M" -f ($contextSize / 1000000)
-    } else {
-        "{0}K" -f ($contextSize / 1000)
-    }
-
-    # Output: [!] [Opus 4.5] [████----] 42% | 580K/1M frei
-    Write-Host "$prefix[$modelDisplay] $color[$bar]$reset $bold$($percentUsed.ToString("0"))%$reset $dim|$reset $remainingDisplay/$contextDisplay frei"
+    # Output: [!] [Opus 4.5] [████----] 42% | 120K frei
+    Write-Host "$prefix[$modelDisplay] $color[$bar]$reset $bold$($percentUsed.ToString("0"))%$reset $dim|$reset $remainingDisplay frei"
 
 } catch {
     Write-Host "[Claude] [--]"
