@@ -170,7 +170,7 @@ if (-not $SkipTerminal) {
             }
 
             $fontConfig = @{
-                face = "JetBrainsMono Nerd Font"
+                face = "JetBrainsMono NF"
             }
 
             if ($wtConfig.profiles.defaults -is [PSCustomObject]) {
@@ -180,7 +180,7 @@ if (-not $SkipTerminal) {
             }
 
             $wtConfig | ConvertTo-Json -Depth 20 | Set-Content $terminalSettings -Encoding UTF8
-            Write-Host "      Schriftart gesetzt: JetBrainsMono Nerd Font" -ForegroundColor Green
+            Write-Host "      Schriftart gesetzt: JetBrainsMono NF" -ForegroundColor Green
         } catch {
             Write-Host "      Fehler beim Aktualisieren: $_" -ForegroundColor Red
         }
