@@ -244,6 +244,55 @@ Native Host Config `allowed_origins` muss mit Extension-ID uebereinstimmen:
 
 ---
 
+## Workaround: Chrome Downgrade auf 143
+
+### Voraussetzungen
+
+- Chrome Sync aktiv (Daten sichern)
+- Lesezeichen exportieren (Backup)
+
+### Schritt 1: Auto-Update deaktivieren (als Administrator)
+
+```cmd
+sc config "GoogleUpdaterService144.0.7547.0" start= disabled
+sc config "GoogleUpdaterInternalService144.0.7547.0" start= disabled
+```
+
+**Hinweis:** Service-Namen koennen variieren. Pruefen mit:
+```cmd
+sc query state= all | findstr /i google
+```
+
+### Schritt 2: Chrome deinstallieren
+
+```
+Windows Einstellungen → Apps → Google Chrome → Deinstallieren
+```
+
+### Schritt 3: Chrome-Daten loeschen
+
+```
+%LOCALAPPDATA%\Google\Chrome
+```
+Ordner loeschen oder umbenennen zu `Chrome_backup`
+
+### Schritt 4: Chrome 143 installieren
+
+Download: https://google-chrome.en.uptodown.com/windows/versions
+
+Suche nach Version **143.x** (z.B. 143.0.6917.185)
+
+### Schritt 5: Lesezeichen importieren
+
+```
+Chrome → ⋮ → Lesezeichen → Lesezeichen-Manager → ⋮ → Lesezeichen importieren
+```
+
+---
+
 ## Changelog
 
+- 2026-01-29: Chrome Downgrade Anleitung hinzugefuegt
+- 2026-01-29: Chrome 144 als moegliche Ursache identifiziert
+- 2026-01-29: GitHub Issue #21791 erstellt
 - 2026-01-29: Initiale Dokumentation aus Troubleshooting-Session
