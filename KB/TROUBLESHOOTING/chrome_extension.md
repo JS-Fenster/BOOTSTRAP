@@ -155,6 +155,11 @@ Ausgabe:
 - GitHub Issue: https://github.com/anthropics/claude-code/issues/21791
 - Erstellt: 2026-01-29
 
+**WICHTIG:** Moeglicherweise verursacht durch **Chrome 144 Update**!
+- Chrome 144.0.7559.98 (nach Update am 2026-01-29)
+- Funktionierte VOR dem Chrome Update
+- Issue #21330 hat gleiche Chrome-Version (144.0.7559.97)
+
 ---
 
 ### 4. Extension nicht verbunden - andere Ursachen
