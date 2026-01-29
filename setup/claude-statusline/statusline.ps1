@@ -1,85 +1,58 @@
-# Claude Code Statusline - v3
-# Zeigt: Model | Fortschritt | Prozent | Frei-Token
-#
-# v3: Nutzt current_usage fuer ECHTEN Kontext-Verbrauch
-#
-# WICHTIG:
-# - total_input_tokens ist KUMULATIV (Summe aller API-Calls)
-# - current_usage.input_tokens ist der AKTUELLE Kontext
-# - Claude Code Auto-Compact greift bei ~200K (unabhaengig vom Modell!)
+# Claude Code Statusline v5
+# Nutzt used_percentage direkt aus Hook-Daten
+# Autocompact triggert bei ~85% (16.5% Buffer)
 
 $ErrorActionPreference = "SilentlyContinue"
 
-# Read JSON from stdin
 $input_json = [Console]::In.ReadToEnd()
 
 try {
     $data = $input_json | ConvertFrom-Json
 
-    # Extract model info
-    $modelDisplay = $data.model.display_name
+    # Direkt aus Hook-Daten
+    $model = $data.model.display_name
+    $usedPercent = $data.context_window.used_percentage
+    $remainingPercent = $data.context_window.remaining_percentage
+    $contextSize = $data.context_window.context_window_size
 
-    # Claude Code Auto-Compact Limit ist IMMER 200K (nicht modellabhaengig!)
-    $contextSize = if ($data.context_window.context_window_size) {
-        $data.context_window.context_window_size
-    } else {
-        200000
-    }
+    # Fallbacks
+    if ($null -eq $usedPercent) { $usedPercent = 0 }
+    if ($null -eq $contextSize) { $contextSize = 200000 }
 
-    # ECHTER Kontext-Verbrauch aus current_usage (nicht kumulativ!)
-    $currentUsage = $data.context_window.current_usage
+    # Freie Tokens berechnen
+    $freeTokens = [math]::Round($remainingPercent * $contextSize / 100 / 1000, 0)
+    $freeDisplay = "{0:N0}K" -f $freeTokens
 
-    if ($null -ne $currentUsage -and $null -ne $currentUsage.input_tokens) {
-        # Aktueller Kontext = input_tokens + cache_read (beides zaehlt zum Kontext)
-        $tokensUsed = $currentUsage.input_tokens
-        if ($currentUsage.cache_read_input_tokens) {
-            $tokensUsed += $currentUsage.cache_read_input_tokens
-        }
-    } else {
-        # Fallback auf kumulative Werte wenn current_usage nicht verfuegbar
-        $tokensUsed = $data.context_window.total_input_tokens
-        if ($null -eq $tokensUsed) { $tokensUsed = 0 }
-    }
-
-    # Prozent-Berechnung
-    $percentUsed = [math]::Min(100, [math]::Round(($tokensUsed / $contextSize) * 100, 1))
-
-    # Build progress bar (20 chars)
+    # Progress Bar (20 chars) - skaliert auf 85% = volle Leiste
     $barSize = 20
-    $filled = [math]::Floor($percentUsed * $barSize / 100)
+    $scaledPercent = [math]::Min(100, [math]::Round($usedPercent / 0.85, 0))
+    $filled = [math]::Floor($scaledPercent * $barSize / 100)
     $empty = $barSize - $filled
 
-    # ASCII-Stil: = (gefuellt) / - (leer)
-    $filledBar = "=" * $filled
-    $emptyBar = "-" * $empty
-    $bar = $filledBar + $emptyBar
+    $bar = ("=" * $filled) + ("-" * $empty)
 
-    # ANSI Colors
+    # ANSI Colors - Warnung basierend auf echtem Prozent
     $esc = [char]27
-    if ($percentUsed -gt 90) {
-        $color = "$esc[91m"      # Bright Red - kritisch (>90%)
+    if ($usedPercent -gt 80) {
+        $color = "$esc[91m"      # Rot - kritisch, Autocompact bald
         $prefix = "$esc[91m[!]$esc[0m "
-    } elseif ($percentUsed -gt 75) {
-        $color = "$esc[93m"      # Bright Yellow - Warnung (>75%)
+    } elseif ($usedPercent -gt 65) {
+        $color = "$esc[93m"      # Gelb - Warnung
         $prefix = ""
-    } elseif ($percentUsed -gt 50) {
-        $color = "$esc[96m"      # Bright Cyan - halb voll
+    } elseif ($usedPercent -gt 45) {
+        $color = "$esc[96m"      # Cyan - halb voll
         $prefix = ""
     } else {
-        $color = "$esc[92m"      # Bright Green - gut
+        $color = "$esc[92m"      # Gruen - gut
         $prefix = ""
     }
     $reset = "$esc[0m"
     $dim = "$esc[90m"
     $bold = "$esc[1m"
 
-    # Remaining tokens
-    $remainingTokens = [math]::Max(0, $contextSize - $tokensUsed)
-    $remainingDisplay = "{0:N0}K" -f [math]::Round($remainingTokens / 1000, 0)
-
-    # Output: [!] [Opus 4.5] [████----] 42% | 120K frei
-    Write-Host "$prefix[$modelDisplay] $color[$bar]$reset $bold$($percentUsed.ToString("0"))%$reset $dim|$reset $remainingDisplay frei"
+    # Output: [Model] [====----] 49% | 102K frei
+    Write-Host "$prefix[$model] $color[$bar]$reset $bold$usedPercent%$reset $dim|$reset $freeDisplay frei"
 
 } catch {
-    Write-Host "[Claude] [--]"
+    Write-Host "[Claude] [Error]"
 }
