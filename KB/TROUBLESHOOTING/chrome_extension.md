@@ -165,10 +165,47 @@ taskkill /F /IM node.exe
 
 ---
 
+## Extension-Konfiguration (verifiziert 2026-01-29)
+
+### Installierte Extension
+
+| Feld | Wert |
+|------|------|
+| Name | Claude |
+| Version | 1.0.41 |
+| ID | `fcoeoabgfenejglbffodgkkbkcdhcgfn` |
+| Groesse | 10,1 MB |
+| Quelle | Chrome Web Store |
+| Status | Aktiviert |
+
+### Berechtigungen (alle vorhanden)
+
+- Auf das Backend fuer Seiten-Debugger zugreifen
+- Alle deine Daten auf allen Websites lesen und aendern
+- Benachrichtigungen einblenden
+- Downloads verwalten
+- **Mit zusammenarbeitenden nativen Anwendungen kommunizieren** (kritisch!)
+- Tabgruppen ansehen und verwalten
+
+### Websitezugriff
+
+- Zugriff: "Auf allen Websites"
+- Zugriff auf Datei-URLs: AUS
+- Fehler erfassen: AUS
+- Im Inkognitomodus: AUS
+
+### ID-Abgleich
+
+Native Host Config `allowed_origins` muss mit Extension-ID uebereinstimmen:
+- Config: `chrome-extension://fcoeoabgfenejglbffodgkkbkcdhcgfn/` ✓
+- Chrome: `fcoeoabgfenejglbffodgkkbkcdhcgfn` ✓
+
+---
+
 ## Offene Fragen
 
 1. Warum verbindet sich die Extension nicht, obwohl alles korrekt aussieht?
-2. Gibt es Logs von der Extension-Seite?
+2. Service Worker Logs pruefen - Fehler?
 3. Muss Chrome mit speziellen Flags gestartet werden?
 
 ---
