@@ -151,7 +151,9 @@ Ausgabe:
 
 **Workaround:** Unbekannt - moeglicherweise muss Claude Code ohne MCP-Server gestartet werden, oder die Chrome-Extension braucht ein Update.
 
-**Status:** Bug-Report bei Anthropic erforderlich
+**Status:** Bug-Report eingereicht
+- GitHub Issue: https://github.com/anthropics/claude-code/issues/21791
+- Erstellt: 2026-01-29
 
 ---
 
