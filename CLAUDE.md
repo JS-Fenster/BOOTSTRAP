@@ -17,6 +17,7 @@
 | **Entscheidungen** | Selbststaendig treffen wenn moeglich |
 | **Rueckfragen** | Bei Unklarheiten immer nachfragen |
 | **Git Commits** | IMMER committen wenn Aenderungen funktionieren (fuer Rollback) |
+| **Git Push** | Nach jedem Commit automatisch pushen (ausser explizit "nicht pushen") |
 
 ---
 
