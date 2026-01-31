@@ -1,6 +1,6 @@
 # Chrome Extension Troubleshooting
 
-> Stand: 2026-01-29
+> Stand: 2026-01-31
 
 ---
 
@@ -149,16 +149,39 @@ Ausgabe:
 
 **Diagnose:** Das ist ein Bug/Architektur-Problem in Claude Code. Der Native Host sollte sich als CLIENT mit dem MCP-Server verbinden, nicht selbst einen Server erstellen.
 
-**Workaround:** Unbekannt - moeglicherweise muss Claude Code ohne MCP-Server gestartet werden, oder die Chrome-Extension braucht ein Update.
+**Workaround:** Claude Code 2.1.19 via npm installieren (funktioniert, getestet 2026-01-31):
+```powershell
+npm install -g @anthropic-ai/claude-code@2.1.19
+```
 
-**Status:** Bug-Report eingereicht
+**Status:** Bug-Report eingereicht, Fix ausstehend
 - GitHub Issue: https://github.com/anthropics/claude-code/issues/21791
 - Erstellt: 2026-01-29
 
-**WICHTIG:** Moeglicherweise verursacht durch **Chrome 144 Update**!
-- Chrome 144.0.7559.98 (nach Update am 2026-01-29)
-- Funktionierte VOR dem Chrome Update
-- Issue #21330 hat gleiche Chrome-Version (144.0.7559.97)
+**WICHTIG:** ~~Moeglicherweise verursacht durch Chrome 144 Update~~ → WIDERLEGT
+
+---
+
+### Ausgeschlossene Ursachen (getestet 2026-01-30)
+
+| Test | Ergebnis |
+|------|----------|
+| Chrome Downgrade (144 → 143) | ❌ Hat NICHT geholfen |
+| Claude Code Downgrade | ❌ Hat NICHT geholfen |
+
+**Fazit:** Problem liegt im Architektur-Bug selbst (Native Host erstellt Server statt Client-Verbindung), nicht in einer bestimmten Version.
+
+---
+
+### Verwandte GitHub Issues
+
+| Issue | Beschreibung |
+|-------|--------------|
+| #21791 | Eigenes Issue (erstellt 2026-01-29) |
+| #21512 | Windows EADDRINUSE / Pipe-Konflikt (Hauptthread) |
+| #21337 | Windows Bridge / Native Messaging nicht verbunden |
+| #21363 | Sammelthread Chrome Extension Windows 11 |
+| #21607, #21426, #21796 | Weitere aehnliche Symptome |
 
 ---
 
@@ -244,7 +267,10 @@ Native Host Config `allowed_origins` muss mit Extension-ID uebereinstimmen:
 
 ---
 
-## Workaround: Chrome Downgrade auf 143
+## ~~Workaround: Chrome Downgrade auf 143~~ (FUNKTIONIERT NICHT)
+
+> **Update 2026-01-30:** Downgrade auf Chrome 143 hat das Problem NICHT behoben.
+> Der Workaround bleibt hier nur zur Dokumentation.
 
 ### Voraussetzungen
 
@@ -292,6 +318,11 @@ Chrome → ⋮ → Lesezeichen → Lesezeichen-Manager → ⋮ → Lesezeichen i
 
 ## Changelog
 
+- 2026-01-31: Workaround bestaetigt: npm-Version 2.1.19 funktioniert
+- 2026-01-31: Fix muss von Claude Code (Anthropic) kommen, nicht Chrome
+- 2026-01-30: Chrome 144 als Ursache WIDERLEGT (Downgrade hat nicht geholfen)
+- 2026-01-30: Claude Code Downgrade hat ebenfalls nicht geholfen
+- 2026-01-30: Verwandte GitHub Issues dokumentiert (#21512, #21337, #21363, etc.)
 - 2026-01-29: Chrome Downgrade Anleitung hinzugefuegt
 - 2026-01-29: Chrome 144 als moegliche Ursache identifiziert
 - 2026-01-29: GitHub Issue #21791 erstellt
