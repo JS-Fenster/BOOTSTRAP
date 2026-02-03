@@ -40,6 +40,7 @@
 | ERP-Datenbank (SQL Schema) | `WORK/repos/KI_Automation/docs/ERP_Datenbank.md` |
 | KI-News & Releases | `KB/REFERENCE/KI_Wissen.md` |
 | Server-Infrastruktur | `WORK/repos/KI_Automation/docs/Server_Infrastruktur.md` |
+| Server-Fixes | `WORK/repos/KI_Automation/docs/Server_Fixes.md` |
 
 ---
 
