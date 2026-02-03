@@ -1,6 +1,6 @@
 # Chrome Extension Troubleshooting
 
-> Stand: 2026-01-31
+> Stand: 2026-02-03
 
 ---
 
@@ -154,11 +154,68 @@ Ausgabe:
 npm install -g @anthropic-ai/claude-code@2.1.19
 ```
 
-**Status:** Bug-Report eingereicht, Fix ausstehend
+**WICHTIG: Auto-Update deaktivieren!** Sonst wird 2.1.19 automatisch ueberschrieben:
+```json
+// ~/.claude/settings.json
+{
+  "autoUpdates": false
+}
+```
+
+**Status:** Bug-Report eingereicht, Root Cause gefunden, Fix ausstehend
 - GitHub Issue: https://github.com/anthropics/claude-code/issues/21791
+- Haupt-Issue: https://github.com/anthropics/claude-code/issues/21512
 - Erstellt: 2026-01-29
 
 **WICHTIG:** ~~Moeglicherweise verursacht durch Chrome 144 Update~~ → WIDERLEGT
+
+---
+
+### Root Cause Analyse (von kimchi-developer, 2026-02-02)
+
+**Das Problem im Detail:**
+
+In Version 2.1.20 wurde eine Multi-Socket-Architektur eingefuehrt. Zwei Funktionen verwalten Socket-Pfade:
+
+1. **`Rj6()` (Native Host)** - Gibt korrekten Windows Named Pipe zurueck:
+```javascript
+function Rj6() {
+  if (platform() === "win32")
+    return `\\\\.\\pipe\\claude-mcp-browser-bridge-${username}`;
+  return join(tmpDir(), `${process.pid}.sock`);
+}
+```
+
+2. **`xQ4()` (MCP Server Socket Pool)** - **Windows-Support FEHLT:**
+```javascript
+function xQ4() {
+  let paths = [];
+  // Scannt nur Unix Socket Files und Temp-Verzeichnisse
+  // Liefert: ["C:\\Users\\...\\Temp\\claude-mcp-browser-bridge-user", "/tmp/..."]
+  // FEHLT: Windows Named Pipe Pfad!
+  return paths;
+}
+```
+
+**Resultat auf Windows:**
+- Native Host hoert auf: `\\.\pipe\claude-mcp-browser-bridge-user` ✓
+- MCP Server verbindet zu: `C:\Users\...\Temp\...` → **ENOENT** ✗
+
+**Der Fix (noch nicht released):**
+```javascript
+function xQ4() {
+  if (platform() === "win32") {
+    return [`\\\\.\\pipe\\claude-mcp-browser-bridge-${username}`];
+  }
+  // existing Unix logic...
+}
+```
+
+**Betroffene Versionen:**
+- Letzte funktionierende: **2.1.19**
+- Erste kaputte: **2.1.20** (Multi-Socket Architektur eingefuehrt)
+
+**Source File (vermutlich):** `packages/cli/src/chrome-extension/socket-bridge.ts`
 
 ---
 
@@ -316,8 +373,34 @@ Chrome → ⋮ → Lesezeichen → Lesezeichen-Manager → ⋮ → Lesezeichen i
 
 ---
 
+## Auto-Update deaktivieren
+
+**Problem:** Claude Code hat einen eingebauten Auto-Updater, der unabhaengig von npm funktioniert. Selbst nach `npm install -g @anthropic-ai/claude-code@2.1.19` kann die Version automatisch auf eine kaputte Version aktualisiert werden.
+
+**Loesung:** In `~/.claude/settings.json`:
+```json
+{
+  "autoUpdates": false
+}
+```
+
+**Hinweis:** Laut GitHub Issues (#9327, #11263) funktioniert diese Einstellung manchmal nicht zuverlaessig. Alternative: Umgebungsvariable setzen:
+```powershell
+# In PowerShell Profil oder System-Umgebungsvariablen:
+$env:DISABLE_AUTOUPDATER = "1"
+```
+
+**Native vs npm Installation:**
+- Native Installation (via `claude install`): Auto-Update im Hintergrund
+- npm Installation: Kein npm-Auto-Update, ABER Claude-interner Updater aktiv
+- Homebrew (Mac): Kein Auto-Update
+
+---
+
 ## Changelog
 
+- 2026-02-03: Root Cause Analyse von kimchi-developer hinzugefuegt
+- 2026-02-03: Auto-Update-Deaktivierung dokumentiert
 - 2026-01-31: Workaround bestaetigt: npm-Version 2.1.19 funktioniert
 - 2026-01-31: Fix muss von Claude Code (Anthropic) kommen, nicht Chrome
 - 2026-01-30: Chrome 144 als Ursache WIDERLEGT (Downgrade hat nicht geholfen)
