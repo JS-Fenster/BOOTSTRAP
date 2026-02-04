@@ -37,10 +37,10 @@
 | Thema | Datei |
 |-------|-------|
 | Code-Standards | `KB/STANDARDS/code_standards.md` |
-| ERP-Datenbank (SQL Schema) | `WORK/repos/KI_Automation/docs/ERP_Datenbank.md` |
+| ERP-Datenbank (SQL Schema) | `WORK/repos/KI-Automation/docs/ERP_Datenbank.md` |
 | KI-News & Releases | `KB/REFERENCE/KI_Wissen.md` |
-| Server-Infrastruktur | `WORK/repos/KI_Automation/docs/Server_Infrastruktur.md` |
-| Server-Fixes | `WORK/repos/KI_Automation/docs/Server_Fixes.md` |
+| Server-Infrastruktur | `WORK/repos/KI-Automation/docs/Server_Infrastruktur.md` |
+| Server-Fixes | `WORK/repos/KI-Automation/docs/Server_Fixes.md` |
 
 ---
 
