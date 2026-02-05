@@ -1,6 +1,6 @@
 # Chrome Extension Troubleshooting
 
-> Stand: 2026-02-03
+> Stand: 2026-02-05
 
 ---
 
@@ -153,6 +153,11 @@ Ausgabe:
 ```powershell
 npm install -g @anthropic-ai/claude-code@2.1.19
 ```
+
+**Manueller Patch auf neueren Versionen:** ❌ FUNKTIONIERT NICHT (getestet 2026-02-05)
+- Versuch: cli.js manuell patchen um Windows Named Pipe Support hinzuzufuegen
+- Ergebnis: Extension verbindet sich trotzdem nicht
+- Fazit: Nur der Downgrade auf 2.1.19 funktioniert zuverlaessig
 
 **WICHTIG: Auto-Update deaktivieren!** Sonst wird 2.1.19 automatisch ueberschrieben:
 ```json
@@ -399,6 +404,7 @@ $env:DISABLE_AUTOUPDATER = "1"
 
 ## Changelog
 
+- 2026-02-05: Manueller Patch auf 2.1.31 getestet - funktioniert NICHT
 - 2026-02-03: Root Cause Analyse von kimchi-developer hinzugefuegt
 - 2026-02-03: Auto-Update-Deaktivierung dokumentiert
 - 2026-01-31: Workaround bestaetigt: npm-Version 2.1.19 funktioniert
