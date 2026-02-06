@@ -41,6 +41,7 @@
 | KI-News & Releases | `KB/REFERENCE/KI_Wissen.md` |
 | Server-Infrastruktur | `WORK/repos/KI-Automation/docs/Server_Infrastruktur.md` |
 | Server-Fixes | `WORK/repos/KI-Automation/docs/Server_Fixes.md` |
+| Drei-Agenten-System | `KB/STANDARDS/drei_agenten_system.md` |
 
 ---
 
