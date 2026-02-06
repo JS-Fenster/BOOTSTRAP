@@ -25,10 +25,10 @@
 
 | Projekt | CLAUDE.md | Beschreibung |
 |---------|-----------|--------------|
-| **erp-system-vite** | `WORK/repos/erp-system-vite/CLAUDE.md` | ERP Frontend (W4A-Ersatz), React + Supabase |
-| **Auftragsmanagement** | `WORK/repos/Auftragsmanagement/CLAUDE.md` | Web-App Auftragsverwaltung |
+| **Auftragsmanagement** | `WORK/repos/Auftragsmanagement/CLAUDE.md` | Haupt-System: Web-App Auftragsverwaltung |
 | **KI_Automation** | `WORK/repos/KI_Automation/CLAUDE.md` | Shared Libs, Tools, DB-Docs |
 | **JS_Prozesse** | `WORK/repos/JS_Prozesse/CLAUDE.md` | Ideen (90), Prozess-Analysen (17) |
+| ~~erp-system-vite~~ | `WORK/repos/erp-system-vite/CLAUDE.md` | **DEPRECATED** - Features werden ins Auftragsmanagement migriert |
 
 ---
 
@@ -75,4 +75,4 @@
 
 ---
 
-*Bootstrap-Version: 2026-01-14*
+*Bootstrap-Version: 2026-02-06*
