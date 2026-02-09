@@ -4,7 +4,20 @@
   },
   "permissions": {
     "allow": [
-      "mcp__supabase__deploy_edge_function"
+      "mcp__supabase__deploy_edge_function",
+      "Bash(Test-Path \"C:\\\\Program Files\\\\nodejs\\\\node.exe\")",
+      "Bash(Test-Path \"C:\\\\Users\\\\andre\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\@anthropic-ai\\\\claude-code\\\\cli.js\")",
+      "Bash(\"C:/Users/andre/.claude/chrome/chrome-native-host.bat\")",
+      "Bash(tasklist:*)",
+      "Bash(gh issue view:*)",
+      "Bash(npm view:*)",
+      "Bash(gh release list:*)",
+      "Bash(gh release view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(gh issue comment 21512 --repo anthropics/claude-code --body \"$\\(cat <<''EOF''\n**Workaround confirmed working** ✓\n\nTested on Windows 11:\n- Downgraded from 2.1.27 to 2.1.19 via npm\n- Chrome extension connects successfully\n- `mcp__claude-in-chrome__*` tools work again\n\n```powershell\nnpm install -g @anthropic-ai/claude-code@2.1.19\n```\n\nEnvironment:\n- Windows 11\n- Chrome 144.0.7559.98\n- Extension v1.0.41\n\nThis confirms the regression was introduced in 2.1.21.\nEOF\n\\)\")"
     ]
   }
 }
