@@ -154,12 +154,52 @@ Ausgabe:
 npm install -g @anthropic-ai/claude-code@2.1.19
 ```
 
-**Manueller Patch auf neueren Versionen:** ❌ FUNKTIONIERT NICHT (getestet 2026-02-05)
-- Versuch: cli.js manuell patchen um Windows Named Pipe Support hinzuzufuegen
-- Ergebnis: Extension verbindet sich trotzdem nicht
-- Fazit: Nur der Downgrade auf 2.1.19 funktioniert zuverlaessig
+**Manueller Patch auf neueren Versionen:** ✅ FUNKTIONIERT (getestet 2026-02-09, v2.1.37)
 
-**WICHTIG: Auto-Update deaktivieren!** Sonst wird 2.1.19 automatisch ueberschrieben:
+Die Funktion `cc4()` in cli.js sammelt Socket-Pfade, aber der Windows Named Pipe Pfad fehlt.
+
+**Patch-Anleitung:**
+
+1. cli.js Pfad finden:
+```powershell
+$cli = "$env:APPDATA\npm\node_modules\@anthropic-ai\claude-code\cli.js"
+```
+
+2. Backup erstellen:
+```powershell
+Copy-Item $cli "$cli.bak"
+```
+
+3. Patch anwenden (Node.js Script):
+```javascript
+const fs = require('fs');
+const path = 'C:/Users/andre/AppData/Roaming/npm/node_modules/@anthropic-ai/claude-code/cli.js';
+let content = fs.readFileSync(path, 'utf8');
+
+const oldCode = 'if(Y!==z&&!A.includes(z))A.push(z);return A}function lCY()';
+const pipePrefix = '\\\\\\\\.\\\\pipe\\\\';
+const winFix = 'if(process.platform==="win32"){let w="' + pipePrefix + '"+K;if(!A.includes(w))A.push(w)}';
+const newCode = 'if(Y!==z&&!A.includes(z))A.push(z);' + winFix + 'return A}function lCY()';
+
+if (content.includes(oldCode)) {
+  content = content.replace(oldCode, newCode);
+  fs.writeFileSync(path, content, 'utf8');
+  console.log('PATCH APPLIED');
+}
+```
+
+4. Chrome + Claude Code neu starten
+
+**Ergebnis:** Der Patch fuegt `\\.\pipe\claude-mcp-browser-bridge-<username>` zu den Socket-Pfaden hinzu.
+
+**WICHTIG:** Patch muss nach jedem Update erneut angewendet werden!
+
+**Alternative:** Claude Code 2.1.19 via npm (funktioniert ohne Patch):
+```powershell
+npm install -g @anthropic-ai/claude-code@2.1.19
+```
+
+**Auto-Update deaktivieren** (verhindert Ueberschreiben):
 ```json
 // ~/.claude/settings.json
 {
@@ -404,7 +444,8 @@ $env:DISABLE_AUTOUPDATER = "1"
 
 ## Changelog
 
-- 2026-02-05: Manueller Patch auf 2.1.31 getestet - funktioniert NICHT
+- 2026-02-09: Manueller Patch auf v2.1.37 FUNKTIONIERT - cc4() Funktion gepatcht
+- 2026-02-05: Manueller Patch auf 2.1.31 getestet - funktioniert NICHT (falscher Ansatz)
 - 2026-02-03: Root Cause Analyse von kimchi-developer hinzugefuegt
 - 2026-02-03: Auto-Update-Deaktivierung dokumentiert
 - 2026-01-31: Workaround bestaetigt: npm-Version 2.1.19 funktioniert
