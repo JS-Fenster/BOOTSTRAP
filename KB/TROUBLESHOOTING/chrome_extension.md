@@ -1,6 +1,6 @@
 # Chrome Extension Troubleshooting
 
-> Stand: 2026-02-05
+> Stand: 2026-02-10
 
 ---
 
@@ -207,10 +207,11 @@ npm install -g @anthropic-ai/claude-code@2.1.19
 }
 ```
 
-**Status:** Bug-Report eingereicht, Root Cause gefunden, Fix ausstehend
+**Status:** Bug-Report eingereicht, Root Cause gefunden, **kein offizieller Fix seit 14 Tagen (2.1.20 bis 2.1.38+)**
 - GitHub Issue: https://github.com/anthropics/claude-code/issues/21791
 - Haupt-Issue: https://github.com/anthropics/claude-code/issues/21512
 - Erstellt: 2026-01-29
+- Kein Anthropic-Mitarbeiter hat bisher in irgendeinem der Issues geantwortet
 
 **WICHTIG:** ~~Moeglicherweise verursacht durch Chrome 144 Update~~ → WIDERLEGT
 
@@ -277,13 +278,40 @@ function xQ4() {
 
 ### Verwandte GitHub Issues
 
-| Issue | Beschreibung |
-|-------|--------------|
-| #21791 | Eigenes Issue (erstellt 2026-01-29) |
-| #21512 | Windows EADDRINUSE / Pipe-Konflikt (Hauptthread) |
-| #21337 | Windows Bridge / Native Messaging nicht verbunden |
-| #21363 | Sammelthread Chrome Extension Windows 11 |
-| #21607, #21426, #21796 | Weitere aehnliche Symptome |
+| Issue | Beschreibung | Status (2026-02-10) |
+|-------|--------------|----------------------|
+| #21791 | Eigenes Issue (erstellt 2026-01-29) | OPEN - Community-Patches dokumentiert |
+| #21512 | Windows EADDRINUSE / Pipe-Konflikt (Hauptthread) | OPEN - Unser Patch fuer v2.1.37 gepostet |
+| #21337 | Windows Bridge / Native Messaging nicht verbunden | OPEN - Umfangreichste Doku, 20+ Kommentare |
+| #21363 | Sammelthread Chrome Extension Windows 11 | OPEN - kimchi-developer hat Fix verlinkt |
+| #21607, #21426, #21796 | Weitere aehnliche Symptome | - |
+
+**Alle Issues beschreiben denselben Bug.** Kein offizieller Fix trotz trivialer Loesung (Einzeiler).
+
+---
+
+### Community-Patches (gleicher Fix, verschiedene Versionen)
+
+Alle Community-Mitglieder haben unabhaengig voneinander denselben Fix gefunden:
+Windows Named Pipe `\\.\pipe\claude-mcp-browser-bridge-<user>` zum Socket-Pool hinzufuegen.
+
+| Wer | Version | Funktionsname (minified) | Quelle |
+|-----|---------|--------------------------|--------|
+| kimchi-developer | 2.1.29 | `xQ4()` | #21791 (Root Cause Analyse) |
+| alex2zimmermann-ux | 2.1.30 | `xQ4()` | #21337 + Gist |
+| plejsq | ~2.1.31 | `xp4()` | #21791 (Claude self-fix) |
+| Trevo88423 | 2.1.33 | generisch | #21337 (Patch-Script) |
+| Brauchligui | 2.1.34 | - | #21791 |
+| gitterxo | 2.1.37 | variiert | #21337 (Claude Web generiert Fix) |
+| **Wir (JS-Fenster)** | **2.1.37** | **`cc4()`** | **#21512 + diese Doku** |
+
+**Hinweis:** Die Funktionsnamen aendern sich durch Minification bei jedem Release.
+Der Fix-Ansatz bleibt identisch - nur der Suchstring im cli.js aendert sich.
+
+**Alternative Workarounds aus der Community:**
+- Downgrade auf 2.1.19 (haeufigster Workaround)
+- `chrome-devtools-mcp` als Ersatz (ajohnclark, #21337)
+- Claude Desktop Registry-Eintrag entfernen falls vorhanden (afram123, #21337)
 
 ---
 
@@ -444,6 +472,9 @@ $env:DISABLE_AUTOUPDATER = "1"
 
 ## Changelog
 
+- 2026-02-10: Community-Analyse: Alle Issues (#21512, #21337, #21363, #21791) haben identischen Bug+Fix
+- 2026-02-10: Kein offizieller Fix in v2.1.38 - Bug besteht seit 14 Tagen (18+ Versionen)
+- 2026-02-10: Kommentar auf #21791 gepostet (Verweis auf #21512 fuer vinch00)
 - 2026-02-09: Manueller Patch auf v2.1.37 FUNKTIONIERT - cc4() Funktion gepatcht
 - 2026-02-05: Manueller Patch auf 2.1.31 getestet - funktioniert NICHT (falscher Ansatz)
 - 2026-02-03: Root Cause Analyse von kimchi-developer hinzugefuegt
