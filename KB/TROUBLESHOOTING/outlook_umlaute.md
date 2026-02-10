@@ -118,4 +118,5 @@ Get-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Control Panel\International'
 
 ## Changelog
 
+- 2026-02-10: UTF-8 Beta wieder DEAKTIVIERT - hat WOT→w4a XML kaputt gemacht (ISO-8859-1 Umlaute)
 - 2026-02-04: Initiale Dokumentation, UTF-8 Beta aktiviert, Test ausstehend
