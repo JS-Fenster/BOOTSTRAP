@@ -42,7 +42,7 @@
 | Server-Infrastruktur | `WORK/repos/KI-Automation/docs/Server_Infrastruktur.md` |
 | Server-Fixes | `WORK/repos/KI-Automation/docs/Server_Fixes.md` |
 | Drei-Agenten-System | `KB/STANDARDS/drei_agenten_system.md` |
-| Rechnungen & Lieferanten-Anlage (w4a) | `KB/REFERENCE/Cloud_Anbieter_Billing.md` |
+| Rechnungen & Lieferanten-Anlage (w4a) | `KB/REFERENCE/Rechnungen_Lieferanten_w4a.md` |
 
 ---
 
