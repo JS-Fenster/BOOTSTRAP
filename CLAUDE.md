@@ -23,12 +23,23 @@
 
 ## Projekte
 
+### Arbeit (JS-Fenster)
+
 | Projekt | CLAUDE.md | Beschreibung |
 |---------|-----------|--------------|
 | **Auftragsmanagement** | `WORK/repos/Auftragsmanagement/CLAUDE.md` | Haupt-System: Web-App Auftragsverwaltung |
+| **PDFtool** | `WORK/repos/PDFtool/CLAUDE.md` | PDF-Editor (Electron + React) |
 | **KI_Automation** | `WORK/repos/KI_Automation/CLAUDE.md` | Shared Libs, Tools, DB-Docs |
 | **JS_Prozesse** | `WORK/repos/JS_Prozesse/CLAUDE.md` | Ideen (90), Prozess-Analysen (17) |
-| ~~erp-system-vite~~ | `WORK/repos/erp-system-vite/CLAUDE.md` | **DEPRECATED** - Features werden ins Auftragsmanagement migriert |
+
+### Privat (Schreiner-Rejs)
+
+| Projekt | CLAUDE.md | Beschreibung |
+|---------|-----------|--------------|
+| **Portfolioanalyse-Web** | `PRIVATE/repos/Portfolioanalyse-Web/CLAUDE.md` | Portfolio-Analyse Web-App (React + Supabase) |
+| **PhotoOrganizer** | `PRIVATE/repos/PhotoOrganizer/CLAUDE.md` | Foto-Organizer (Electron + Python + digiKam) |
+| **Haushaltsbuch** | `PRIVATE/repos/Haushaltsbuch/` | Desktop Finanzverwaltung (Python, v1.0) |
+| **Verkaufstool** | `PRIVATE/repos/Verkaufstool/` | Kleinanzeigen/Vinted Tool (Python, Konzeptphase) |
 
 ---
 
@@ -77,4 +88,4 @@
 
 ---
 
-*Bootstrap-Version: 2026-02-06*
+*Bootstrap-Version: 2026-02-23*
