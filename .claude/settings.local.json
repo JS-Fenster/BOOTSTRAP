@@ -17,7 +17,7 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push)",
-      "Bash(gh issue comment 21512 --repo anthropics/claude-code --body \"$\\(cat <<''EOF''\n**Workaround confirmed working** ✓\n\nTested on Windows 11:\n- Downgraded from 2.1.27 to 2.1.19 via npm\n- Chrome extension connects successfully\n- `mcp__claude-in-chrome__*` tools work again\n\n```powershell\nnpm install -g @anthropic-ai/claude-code@2.1.19\n```\n\nEnvironment:\n- Windows 11\n- Chrome 144.0.7559.98\n- Extension v1.0.41\n\nThis confirms the regression was introduced in 2.1.21.\nEOF\n\\)\")"
+      "Bash(gh issue comment:*)"
     ]
   }
 }
