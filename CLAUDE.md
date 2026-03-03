@@ -31,6 +31,7 @@
 | **PDFtool** | `WORK/repos/PDFtool/CLAUDE.md` | PDF-Editor (Electron + React) |
 | **KI_Automation** | `WORK/repos/KI_Automation/CLAUDE.md` | Shared Libs, Tools, DB-Docs |
 | **JS_Prozesse** | `WORK/repos/JS_Prozesse/CLAUDE.md` | Ideen (90), Prozess-Analysen (17) |
+| **WorkflowAnalyzer** | `WORK/repos/WorkflowAnalyzer/CLAUDE.md` | Desktop-Workflow-Analyse (ActivityWatch + KI) |
 
 ### Privat (Schreiner-Rejs)
 
